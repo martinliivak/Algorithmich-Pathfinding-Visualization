@@ -27,7 +27,7 @@ def generation_and_solution(root, solution_window):
 
     # Generate maze and its entrances
     m = Maze()
-    m.generator = AldousBroder(solution_window.maze_width, solution_window.maze_width)
+    m.generator = AldousBroder(solution_window.maze_width, solution_window.maze_height)
     m.generate()
     m.generate_entrances()
 

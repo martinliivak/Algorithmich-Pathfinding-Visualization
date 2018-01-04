@@ -72,7 +72,6 @@ class MazeUI(Frame):
             if 5 <= height <= 100 and 5 <= width <= 100:
                 self.maze_width = width
                 self.maze_height = height
-
                 self.maze_generated = True
             else:
                 messagebox.showwarning("Size error", "Height and width need to be between 5 and 100.")
@@ -127,9 +126,19 @@ class MazeUI(Frame):
             self.recolor_point(point[0], point[1], rgb_values)
 
     def update_maze(self):
-        # Create image from RGB array and scale it to size 500x500
+        # Create image from RGB array and scale it to size 480x480
+        # If image is not squared, it will be upscaled and aspect ratio is retained
         pil_image = Image.fromarray(self.visual_grid)
-        scaled_image = ImageOps.fit(pil_image, (480, 480))
+        #scaled_image = ImageOps.fit(pil_image, (480, 480))
+
+        old_size = pil_image.size
+        ratio = float(480) / max(old_size)
+        new_size = tuple([int(x * ratio) for x in old_size])
+        pil_image = pil_image.resize(new_size)
+        scaled_image = Image.new("RGB", (480, 480))
+        scaled_image.paste(pil_image,
+                           ((480 - new_size[0]) // 2,
+                           (480 - new_size[1]) // 2))
 
         # Draw image onto the canvas
         self.photo = ImageTk.PhotoImage(scaled_image)
