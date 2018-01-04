@@ -47,12 +47,25 @@ class MazeUI(Frame):
         pass
 
     def initialize_maze(self, grid):
-        self.maze_grid = grid
+        self.maze_grid = 1 - grid
 
         # Scale the numbers to 255 and create RGB channels
-        self.visual_grid = np.vstack((self.maze_grid.astype('uint8')*255,
-                                      self.maze_grid.astype('uint8')*255,
-                                      self.maze_grid.astype('uint8')*255))
+        self.visual_grid = np.stack((self.maze_grid.astype('uint8')*255,
+                                     self.maze_grid.astype('uint8')*255,
+                                     self.maze_grid.astype('uint8')*255),
+                                    axis=2)
+
+    def paint_entrances(self, start, end):
+        # Start to red
+        self.recolor_point(start[0], start[1], (232, 9, 9))
+
+        # End to green
+        self.recolor_point(end[0], end[1], (20, 155, 40))
+
+    def recolor_point(self, r, c, rgb_values):
+        self.visual_grid[r][c][0] = rgb_values[0]
+        self.visual_grid[r][c][1] = rgb_values[1]
+        self.visual_grid[r][c][2] = rgb_values[2]
 
     def update_discoveries_visalization(self, doodoo):
         pass
@@ -62,7 +75,7 @@ class MazeUI(Frame):
 
         # Create image from RGB array and scale it to size 500x500
         pil_image = Image.fromarray(self.visual_grid)
-        scaled_image = ImageOps.fit(pil_image, (500, 500))
+        scaled_image = ImageOps.fit(pil_image, (480, 480))
 
         # Draw image onto the canvas
         self.photo = ImageTk.PhotoImage(scaled_image)

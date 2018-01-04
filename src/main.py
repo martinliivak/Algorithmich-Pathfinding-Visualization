@@ -25,25 +25,26 @@ def on_close():
     global hard_exit
     # ???
 
-    if messagebox.askokcancel("Quit", "Do you want to quit?"):
-        hard_exit = True
+    # Comment out exit confirmation for ease of testing.
+    #if messagebox.askokcancel("Quit", "Do you want to quit?"):
+    #    hard_exit = True
+    hard_exit = True
 
 
 m = Maze()
-m.generator = AldousBroder(50, 50)
+m.generator = AldousBroder(30, 30)
 m.generate()
 m.generate_entrances()
 
-print(m.grid)
-print(m.start)
-print(m.end)
-
+# Tkinter initalization
 root = Tk()
 root.geometry("%dx%d" % (520, 600))
 root.protocol("WM_DELETE_WINDOW", on_close)
-solution_window = MazeUI(root)
 
+# MazeUI initalization
+solution_window = MazeUI(root)
 solution_window.initialize_maze(m.grid)
+solution_window.paint_entrances(m.start, m.end)
 
 while 1:
     solution_window.update_maze(m.grid)
