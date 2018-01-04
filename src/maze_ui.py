@@ -13,6 +13,8 @@ class MazeUI(Frame):
         self.parent = parent
         self.row, self.col = -1, -1
         self.maze_grid = None
+        self.visual_grid = None
+        self.solution_grid = None
         self.photo = None
         self.__initUI()
 
@@ -44,11 +46,22 @@ class MazeUI(Frame):
     def __next_step(self):
         pass
 
-    def update_grid(self, new_grid):
-        self.maze_grid = new_grid
+    def initialize_maze(self, grid):
+        self.maze_grid = grid
 
-        # Scale the numbers to 255 and scale image size to 500x500
-        pil_image = Image.fromarray(self.maze_grid.astype('uint8')*255)
+        # Scale the numbers to 255 and create RGB channels
+        self.visual_grid = np.vstack((self.maze_grid.astype('uint8')*255,
+                                      self.maze_grid.astype('uint8')*255,
+                                      self.maze_grid.astype('uint8')*255))
+
+    def update_discoveries_visalization(self, doodoo):
+        pass
+
+    def update_maze(self, new_grid):
+        self.solution_grid = new_grid
+
+        # Create image from RGB array and scale it to size 500x500
+        pil_image = Image.fromarray(self.visual_grid)
         scaled_image = ImageOps.fit(pil_image, (500, 500))
 
         # Draw image onto the canvas

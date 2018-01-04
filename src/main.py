@@ -5,10 +5,10 @@ from aldous_broder import AldousBroder
 
 from maze_ui import MazeUI
 from tkinter import Tk, messagebox
-
 import matplotlib.pyplot as plt
 
 hard_exit = False
+
 
 def showPNG(grid):
     """Generate a simple image of the maze."""
@@ -34,6 +34,7 @@ m.generator = AldousBroder(50, 50)
 m.generate()
 m.generate_entrances()
 
+print(m.grid)
 print(m.start)
 print(m.end)
 
@@ -42,8 +43,10 @@ root.geometry("%dx%d" % (520, 600))
 root.protocol("WM_DELETE_WINDOW", on_close)
 solution_window = MazeUI(root)
 
+solution_window.initialize_maze(m.grid)
+
 while 1:
-    solution_window.update_grid(m.grid)
+    solution_window.update_maze(m.grid)
     root.update()
 
     if hard_exit:
