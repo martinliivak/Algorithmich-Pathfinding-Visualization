@@ -23,6 +23,8 @@ def on_close():
 
 
 def generation_and_solution(root, solution_window):
+    global hard_exit
+
     # Generate maze and its entrances
     m = Maze()
     m.generator = AldousBroder(solution_window.maze_width, solution_window.maze_width)
