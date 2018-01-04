@@ -1,6 +1,7 @@
 from maze import Maze
 from kruskal import Kruskal
 from prims import Prims
+from aldous_broder import AldousBroder
 
 from maze_ui import MazeUI
 from tkinter import Tk, messagebox
@@ -29,8 +30,12 @@ def on_close():
 
 
 m = Maze()
-m.generator = Kruskal(50, 50)
+m.generator = AldousBroder(50, 50)
 m.generate()
+m.generate_entrances()
+
+print(m.start)
+print(m.end)
 
 root = Tk()
 root.geometry("%dx%d" % (520, 600))
