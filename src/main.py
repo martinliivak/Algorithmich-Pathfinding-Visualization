@@ -7,6 +7,8 @@ from maze_ui import MazeUI
 from tkinter import Tk, messagebox
 import matplotlib.pyplot as plt
 
+from a_star import AStar
+
 hard_exit = False
 
 
@@ -46,9 +48,22 @@ solution_window = MazeUI(root)
 solution_window.initialize_maze(m.grid)
 solution_window.paint_entrances(m.start, m.end)
 
-while 1:
-    solution_window.update_maze(m.grid)
-    root.update()
+solution_window.maze_grid[m.start[0], m.start[1]] = 0
+solution_window.maze_grid[m.end[0], m.end[1]] = 0
 
-    if hard_exit:
+print(m.start)
+print(m.end)
+print(solution_window.maze_grid)
+
+asd = AStar(solution_window.maze_grid, m.start, m.end)
+
+while True:
+    new_elem = next(asd)
+    print(new_elem)
+
+    if not new_elem:
         break
+
+    solution_window.recolor_point(new_elem[0], new_elem[1], (51, 109, 204))
+    solution_window.update_maze(solution_window.visual_grid)
+    root.update()

@@ -47,12 +47,13 @@ class MazeUI(Frame):
         pass
 
     def initialize_maze(self, grid):
-        self.maze_grid = 1 - grid
+        self.maze_grid = grid
+        invert_bw_grid = 1 - grid
 
         # Scale the numbers to 255 and create RGB channels
-        self.visual_grid = np.stack((self.maze_grid.astype('uint8')*255,
-                                     self.maze_grid.astype('uint8')*255,
-                                     self.maze_grid.astype('uint8')*255),
+        self.visual_grid = np.stack((invert_bw_grid.astype('uint8')*255,
+                                     invert_bw_grid.astype('uint8')*255,
+                                     invert_bw_grid.astype('uint8')*255),
                                     axis=2)
 
     def paint_entrances(self, start, end):
