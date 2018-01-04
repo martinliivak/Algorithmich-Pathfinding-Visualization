@@ -1,4 +1,4 @@
-from tkinter import Frame, Button, BOTH, Canvas, SE
+from tkinter import Frame, Label, Entry, Button, BOTH, Canvas, SE, messagebox
 from PIL import Image, ImageOps, ImageTk
 import numpy as np
 import logging
@@ -13,6 +13,9 @@ class MazeUI(Frame):
         self.parent = parent
         self.row, self.col = -1, -1
 
+        self.maze_width = None
+        self.maze_height = None
+
         self.start = False
         self.pause = False
         self.next = False
@@ -20,7 +23,6 @@ class MazeUI(Frame):
         self.maze_grid = None
         self.visual_grid = None
         self.solution_grid = None
-
         self.photo = None
 
         self.__initUI()
@@ -32,17 +34,48 @@ class MazeUI(Frame):
         self.parent.title("Maze traversal")
         self.pack(fill=BOTH, expand=1)
 
+        Label(self, text='Width').grid(row=0, column=0)
+        Label(self, text='Height').grid(row=0, column=1)
+
+        self.maze_width_entry = Entry(self)
+        self.maze_width_entry.grid(row=1, column=0)
+        self.maze_width_entry.insert('end', '50')
+
+        self.maze_height_entry = Entry(self)
+        self.maze_height_entry.grid(row=1, column=1)
+        self.maze_height_entry.insert('end', '50')
+
+        self.create_maze = Button(self, text="Generate maze", command=self.__create_maze)
+        self.create_maze.grid(row=1, column=2)
+
         self.canvas = Canvas(self, width=500, height=500)
-        self.canvas.grid(row=0, column=0, columnspan=3, pady=(10, 10), padx=(10, 10))
+        self.canvas.grid(row=2, column=0, columnspan=3, pady=(5, 5), padx=(4, 4))
 
         self.start_solution = Button(self, text="Start", command=self.__start_solution)
-        self.start_solution.grid(row=1, column=0, pady=(0, 10))
+        self.start_solution.grid(row=3, column=0, pady=(0, 10))
 
         self.pause_solution = Button(self, text="Pause", command=self.__pause_solution)
-        self.pause_solution.grid(row=1, column=1, pady=(0, 10))
+        self.pause_solution.grid(row=3, column=1, pady=(0, 10))
 
         self.next_step = Button(self, text="Next", command=self.__next_step)
-        self.next_step.grid(row=1, column=2, pady=(0, 10))
+        self.next_step.grid(row=3, column=2, pady=(0, 10))
+
+    def __create_maze(self):
+        try:
+            height = int(self.maze_height_entry.get())
+            width = int(self.maze_width_entry.get())
+        except (ValueError, TypeError):
+            height, width = '-1', '-1'
+
+        if isinstance(height, int) and isinstance(width, int):
+            if 5 <= height <= 100 and 5 <= width <= 100:
+                self.maze_width = width
+                self.maze_height = height
+            else:
+                messagebox.showwarning("Size error", "Height and width need to be between 5 and 100.")
+        else:
+            messagebox.showwarning("Input error", "Height and width need to be integers.")
+
 
     def __start_solution(self):
         """

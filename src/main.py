@@ -33,19 +33,28 @@ def on_close():
     hard_exit = True
 
 
+# Tkinter initalization
+root = Tk()
+root.geometry("%dx%d" % (520, 600))
+root.protocol("WM_DELETE_WINDOW", on_close)
+solution_window = MazeUI(root)
+
+while True:
+    root.update()
+
+    if hard_exit:
+        break
+
+    if solution_window.maze_width is not None and solution_window.maze_width is not None:
+        break
+
 # Generate maze and its entrances
 m = Maze()
 m.generator = AldousBroder(50, 50)
 m.generate()
 m.generate_entrances()
 
-# Tkinter initalization
-root = Tk()
-root.geometry("%dx%d" % (520, 600))
-root.protocol("WM_DELETE_WINDOW", on_close)
-
 # MazeUI initalization
-solution_window = MazeUI(root)
 solution_window.initialize_maze(m)
 
 # Make entrance and exit into accessible areas
