@@ -12,10 +12,17 @@ class MazeUI(Frame):
         Frame.__init__(self, parent)
         self.parent = parent
         self.row, self.col = -1, -1
+
+        self.start = False
+        self.pause = False
+        self.next = False
+
         self.maze_grid = None
         self.visual_grid = None
         self.solution_grid = None
+
         self.photo = None
+
         self.__initUI()
 
     def __initUI(self):
@@ -38,13 +45,21 @@ class MazeUI(Frame):
         self.next_step.grid(row=1, column=2, pady=(0, 10))
 
     def __start_solution(self):
-        pass
+        """
+        Stop pausing and start solving."""
+        self.start = True
+        self.pause = False
 
     def __pause_solution(self):
-        pass
+        """
+        Start pausing and stop solving."""
+        self.pause = True
+        self.start = True
 
     def __next_step(self):
-        pass
+        """
+        Pressing next has no meaning if solving isn't paused."""
+        self.next = True
 
     def initialize_maze(self, grid):
         self.maze_grid = grid
@@ -55,6 +70,7 @@ class MazeUI(Frame):
                                      invert_bw_grid.astype('uint8')*255,
                                      invert_bw_grid.astype('uint8')*255),
                                     axis=2)
+        self.update_maze()
 
     def paint_entrances(self, start, end):
         # Start to red
