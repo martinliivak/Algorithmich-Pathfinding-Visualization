@@ -32,7 +32,7 @@ def on_close():
     #    hard_exit = True
     hard_exit = True
 
-
+# Generate maze and its entrances
 m = Maze()
 m.generator = AldousBroder(10, 10)
 m.generate()
@@ -65,14 +65,15 @@ while True:
         break
 
     if new_elem is not None:
+        # Recolor discovery path
         solution_window.recolor_point(new_elem[0], new_elem[1], (51, 109, 204))
-        solution_window.update_maze(solution_window.visual_grid)
+        solution_window.update_maze()
 
         new_elem = next(asd)
     else:
         # Recolor endpoint
         solution_window.recolor_point(m.end[0], m.end[1], (51, 109, 204))
-        solution_window.update_maze(solution_window.visual_grid)
+        solution_window.update_maze()
 
         path = asd.came_from
         print(path)
