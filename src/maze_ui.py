@@ -68,8 +68,9 @@ class MazeUI(Frame):
         self.visual_grid[r][c][1] = rgb_values[1]
         self.visual_grid[r][c][2] = rgb_values[2]
 
-    def update_discoveries_visalization(self, doodoo):
-        pass
+    def draw_final_path(self, path, rgb_values):
+        for point in path:
+            self.recolor_point(point[0], point[1], rgb_values)
 
     def update_maze(self):
         # Create image from RGB array and scale it to size 500x500

@@ -76,6 +76,11 @@ while True:
         solution_window.update_maze()
 
         path = asd.came_from
+
+        # Draw solution
+        solution_window.draw_final_path(path, (53, 165, 24))
+        solution_window.update_maze()
+
         print(path)
         print(m.start)
         print(m.end)
