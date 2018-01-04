@@ -71,9 +71,7 @@ class MazeUI(Frame):
     def update_discoveries_visalization(self, doodoo):
         pass
 
-    def update_maze(self, new_grid):
-        self.solution_grid = new_grid
-
+    def update_maze(self):
         # Create image from RGB array and scale it to size 500x500
         pil_image = Image.fromarray(self.visual_grid)
         scaled_image = ImageOps.fit(pil_image, (480, 480))

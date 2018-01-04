@@ -96,7 +96,7 @@ class Maze(object):
         # create an inner maze entrance
         second = (randrange(1, H, 2), randrange(1, W, 2))
 
-        return first, second
+        return (first, second)
 
     def tostring(self, entrances=False, solutions=False):
         """ Return a string representation of the maze. """
