@@ -110,7 +110,7 @@ class AStar:
             current = self.frontier.get()
 
             if current == self.goal:
-                return current
+                break
 
             for next_item in self._get_neighbours(current):
                 new_cost = self.cost_so_far[current] + 1

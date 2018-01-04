@@ -34,7 +34,7 @@ def on_close():
 
 
 m = Maze()
-m.generator = AldousBroder(30, 30)
+m.generator = AldousBroder(10, 10)
 m.generate()
 m.generate_entrances()
 
@@ -56,14 +56,27 @@ print(m.end)
 print(solution_window.maze_grid)
 
 asd = AStar(solution_window.maze_grid, m.start, m.end)
+new_elem = next(asd)
 
 while True:
-    new_elem = next(asd)
     print(new_elem)
 
-    if not new_elem:
+    if hard_exit:
         break
 
-    solution_window.recolor_point(new_elem[0], new_elem[1], (51, 109, 204))
-    solution_window.update_maze(solution_window.visual_grid)
+    if new_elem is not None:
+        solution_window.recolor_point(new_elem[0], new_elem[1], (51, 109, 204))
+        solution_window.update_maze(solution_window.visual_grid)
+
+        new_elem = next(asd)
+    else:
+        # Recolor endpoint
+        solution_window.recolor_point(m.end[0], m.end[1], (51, 109, 204))
+        solution_window.update_maze(solution_window.visual_grid)
+
+        path = asd.came_from
+        print(path)
+        print(m.start)
+        print(m.end)
     root.update()
+
