@@ -105,6 +105,17 @@ class AStar:
 
         return neighbours
 
+    def get_path(self):
+        """
+        Source: Wikipedia (https://en.wikipedia.org/wiki/A*_search_algorithm)"""
+        current_node = self.goal
+        total_path = [current_node]
+        while current_node in self.came_from:
+            current_node = self.came_from[current_node]
+            total_path.append(current_node)
+
+        return total_path
+
     def __next__(self):
         while not self.frontier.empty():
             current = self.frontier.get()
