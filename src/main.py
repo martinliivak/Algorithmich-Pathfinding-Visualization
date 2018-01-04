@@ -7,7 +7,7 @@ from maze_ui import MazeUI
 from tkinter import Tk, messagebox
 import matplotlib.pyplot as plt
 
-from a_star import AStar
+from a_star import AStar, AStar2
 
 hard_exit = False
 
@@ -28,13 +28,14 @@ def on_close():
     # ???
 
     # Comment out exit confirmation for ease of testing.
-    #if messagebox.askokcancel("Quit", "Do you want to quit?"):
+    # if messagebox.askokcancel("Quit", "Do you want to quit?"):
     #    hard_exit = True
     hard_exit = True
 
+
 # Generate maze and its entrances
 m = Maze()
-m.generator = AldousBroder(10, 10)
+m.generator = AldousBroder(50, 50)
 m.generate()
 m.generate_entrances()
 
@@ -55,8 +56,8 @@ print(m.start)
 print(m.end)
 print(solution_window.maze_grid)
 
-asd = AStar(solution_window.maze_grid, m.start, m.end)
-new_elem = next(asd)
+solver = AStar(solution_window.maze_grid, m.start, m.end)
+new_elem = next(solver)
 
 while True:
     print(new_elem)
@@ -69,20 +70,16 @@ while True:
         solution_window.recolor_point(new_elem[0], new_elem[1], (51, 109, 204))
         solution_window.update_maze()
 
-        new_elem = next(asd)
+        new_elem = next(solver)
     else:
         # Recolor endpoint
         solution_window.recolor_point(m.end[0], m.end[1], (51, 109, 204))
         solution_window.update_maze()
 
-        path = asd.came_from
+        path = solver.get_path()
 
         # Draw solution
         solution_window.draw_final_path(path, (53, 165, 24))
         solution_window.update_maze()
 
-        print(path)
-        print(m.start)
-        print(m.end)
     root.update()
-
