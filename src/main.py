@@ -45,8 +45,9 @@ def generation_and_solution(root, solution_window):
 
     while True:
         if solution_window.maze_generated:
-            # Clear canvas from old maze
+            # Clear canvas from old maze and stop new execution.
             solution_window.canvas.delete("all")
+            solution_window.start = False
             return
 
         if hard_exit:
