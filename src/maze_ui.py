@@ -15,6 +15,7 @@ class MazeUI(Frame):
 
         self.maze_width = None
         self.maze_height = None
+        self.maze_generated = False
 
         self.start = False
         self.pause = False
@@ -45,7 +46,7 @@ class MazeUI(Frame):
         self.maze_height_entry.grid(row=1, column=1)
         self.maze_height_entry.insert('end', '50')
 
-        self.create_maze = Button(self, text="Generate maze", command=self.__create_maze)
+        self.create_maze = Button(self, text="Generate maze", command=self.__generate_maze)
         self.create_maze.grid(row=1, column=2)
 
         self.canvas = Canvas(self, width=500, height=500)
@@ -60,7 +61,7 @@ class MazeUI(Frame):
         self.next_step = Button(self, text="Next", command=self.__next_step)
         self.next_step.grid(row=3, column=2, pady=(0, 10))
 
-    def __create_maze(self):
+    def __generate_maze(self):
         try:
             height = int(self.maze_height_entry.get())
             width = int(self.maze_width_entry.get())
@@ -71,6 +72,8 @@ class MazeUI(Frame):
             if 5 <= height <= 100 and 5 <= width <= 100:
                 self.maze_width = width
                 self.maze_height = height
+
+                self.maze_generated = True
             else:
                 messagebox.showwarning("Size error", "Height and width need to be between 5 and 100.")
         else:
