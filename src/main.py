@@ -1,23 +1,14 @@
+from tkinter import Tk, messagebox
+
 from maze import Maze
 from kruskal import Kruskal
 from prims import Prims
 from aldous_broder import AldousBroder
-
 from maze_ui import MazeUI
-from tkinter import Tk, messagebox
-import matplotlib.pyplot as plt
-
 from a_star import AStar, AStar2
 
+
 hard_exit = False
-
-
-def showPNG(grid):
-    """Generate a simple image of the maze."""
-    plt.figure(figsize=(10, 5))
-    plt.imshow(grid, cmap=plt.cm.binary, interpolation="nearest")
-    plt.xticks([]), plt.yticks([])
-    plt.show()
 
 
 def on_close():
@@ -50,7 +41,7 @@ while True:
 
 # Generate maze and its entrances
 m = Maze()
-m.generator = AldousBroder(50, 50)
+m.generator = AldousBroder(solution_window.maze_width, solution_window.maze_width)
 m.generate()
 m.generate_entrances()
 
