@@ -61,23 +61,25 @@ class MazeUI(Frame):
         Pressing next has no meaning if solving isn't paused."""
         self.next = True
 
-    def initialize_maze(self, grid):
-        self.maze_grid = grid
-        invert_bw_grid = 1 - grid
+    def initialize_maze(self, maze):
+        self.maze_grid = maze.grid
+        invert_bw_grid = 1 - maze.grid
 
         # Scale the numbers to 255 and create RGB channels
         self.visual_grid = np.stack((invert_bw_grid.astype('uint8')*255,
                                      invert_bw_grid.astype('uint8')*255,
                                      invert_bw_grid.astype('uint8')*255),
                                     axis=2)
+
+        self.paint_entrances(maze.start, maze.end)
         self.update_maze()
 
     def paint_entrances(self, start, end):
         # Start to red
-        self.recolor_point(start[0], start[1], (232, 9, 9))
+        self.recolor_point(start[0], start[1], (255, 53, 22))
 
         # End to green
-        self.recolor_point(end[0], end[1], (20, 155, 40))
+        self.recolor_point(end[0], end[1], (2, 255, 32))
 
     def recolor_point(self, r, c, rgb_values):
         self.visual_grid[r][c][0] = rgb_values[0]

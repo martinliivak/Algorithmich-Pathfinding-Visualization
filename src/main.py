@@ -46,9 +46,9 @@ root.protocol("WM_DELETE_WINDOW", on_close)
 
 # MazeUI initalization
 solution_window = MazeUI(root)
-solution_window.initialize_maze(m.grid)
-solution_window.paint_entrances(m.start, m.end)
+solution_window.initialize_maze(m)
 
+# Make entrance and exit into accessible areas
 solution_window.maze_grid[m.start[0], m.start[1]] = 0
 solution_window.maze_grid[m.end[0], m.end[1]] = 0
 
