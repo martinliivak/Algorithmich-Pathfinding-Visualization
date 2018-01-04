@@ -87,6 +87,7 @@ def generation_and_solution(root, solution_window):
 # Tkinter initalization
 root = Tk()
 root.geometry("%dx%d" % (520, 600))
+root.resizable(False, False)
 root.protocol("WM_DELETE_WINDOW", on_close)
 solution_window = MazeUI(root)
 
