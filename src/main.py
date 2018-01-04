@@ -7,7 +7,6 @@ from aldous_broder import AldousBroder
 from maze_ui import MazeUI
 from a_star import AStar, AStar2
 
-
 hard_exit = False
 
 
@@ -23,6 +22,9 @@ def on_close():
 
 
 def generation_and_solution(root, solution_window):
+    """
+    Maze's internal loop for solving and stepping."""
+
     global hard_exit
 
     # Generate maze and its entrances
@@ -87,6 +89,7 @@ root.geometry("%dx%d" % (520, 600))
 root.protocol("WM_DELETE_WINDOW", on_close)
 solution_window = MazeUI(root)
 
+# External loop
 while True:
     root.update()
 

@@ -1,7 +1,6 @@
 from tkinter import Frame, Label, Entry, Button, BOTH, Canvas, SE, messagebox
 from PIL import Image, ImageOps, ImageTk
 import numpy as np
-import logging
 
 
 class MazeUI(Frame):
@@ -137,8 +136,7 @@ class MazeUI(Frame):
         pil_image = pil_image.resize(new_size)
         scaled_image = Image.new("RGB", (480, 480))
         scaled_image.paste(pil_image,
-                           ((480 - new_size[0]) // 2,
-                           (480 - new_size[1]) // 2))
+                           ((480 - new_size[0]) // 2, (480 - new_size[1]) // 2))
 
         # Draw image onto the canvas
         self.photo = ImageTk.PhotoImage(scaled_image)
