@@ -23,7 +23,7 @@ def on_close():
 
 
 def resize_root_if_needed(root, number_of_solvers):
-    root.geometry("%dx%d" % (number_of_solvers*520, 600))
+    root.geometry("%dx%d" % (number_of_solvers * 520, 600))
 
 
 def generate_maze(solution_window):
@@ -95,6 +95,62 @@ def start_solver(root, solution_window, solver):
             solution_window.update_maze()
 
 
+def start_solving(root, solution_window, active_solvers):
+    nr_solvers = len(active_solvers)
+
+    new_elems = [None] * nr_solvers
+    for i, solver in enumerate(active_solvers):
+        new_elems[i] = next(solver)
+
+    while True:
+        if solution_window.generate_new:
+            # Clear canvas from old maze (?? is it even necessary??) and stop new execution.
+            # solution_window.clear_canvas_for_solver(solver.get_name())
+            solution_window.start = False
+            return
+
+        if hard_exit:
+            break
+
+        root.update()
+
+        # If start hasn't been pressed don't start solving
+        if not solution_window.start:
+            continue
+
+        # If pause is pressed, skip calculation. If next is pressed calculate until next iteration
+        if solution_window.pause:
+            if solution_window.next:
+                solution_window.next = False
+            else:
+                continue
+
+        for i, new_elem in enumerate(new_elems):
+            solver = active_solvers[i]
+            if new_elem is not None:
+                solution_window.recolor_point(solver.get_name(),
+                                              new_elem[0],
+                                              new_elem[1],
+                                              (51, 109, 204))
+                solution_window.update_maze()
+
+                new_elems[i] = next(solver)
+            else:
+                solution_window.recolor_point(solver.get_name(),
+                                              solution_window.maze.end[0],
+                                              solution_window.maze.end[1],
+                                              (51, 109, 204))
+                solution_window.update_maze()
+
+                path = solver.get_path()
+
+                # Draw solution
+                solution_window.draw_final_path(solver.get_name(),
+                                                path,
+                                                (53, 165, 24))
+                solution_window.update_maze()
+
+
 def generation_and_solution(root, solution_window):
     """
     Maze's internal loop for solving and stepping."""
@@ -120,7 +176,7 @@ def generation_and_solution(root, solution_window):
     while True:
         if solution_window.generate_new:
             # Clear canvas from old maze and stop new execution.
-            #solution_window.canvas.delete("all")
+            # solution_window.canvas.delete("all")
             solution_window.start = False
             return
 
@@ -193,7 +249,11 @@ while True:
         resize_root_if_needed(root, len(solution_window.selected_solver_names))
         maze = generate_maze(solution_window)
 
+        active_solvers = []
+
         for solver_name, solver in solver_name_dict.items():
             if solver_name in solution_window.selected_solver_names:
                 init_solver = solver(solution_window.maze_grid, maze.start, maze.end)
-                start_solver(root, solution_window, init_solver)
+                active_solvers.append(init_solver)
+
+        start_solving(root, solution_window, active_solvers)
