@@ -42,8 +42,8 @@ class MazeUI(Frame):
         self.parent.title("Maze traversal")
         self.pack(fill=BOTH, expand=1)
 
-        Label(self, text='Width').grid(row=0, column=0)
-        Label(self, text='Height').grid(row=0, column=1)
+        Label(self, text='Height').grid(row=0, column=0)
+        Label(self, text='Width').grid(row=0, column=1)
 
         self.maze_width_entry = Entry(self)
         self.maze_width_entry.grid(row=1, column=0)
