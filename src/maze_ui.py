@@ -14,7 +14,7 @@ class MazeUI(Frame):
         self.row, self.col = -1, -1
 
         self.solvers = solvers
-        self.selected_algorithms = []
+        self.selected_solvers = []
 
         self.maze_width = None
         self.maze_height = None
@@ -25,10 +25,13 @@ class MazeUI(Frame):
         self.pause = False
         self.next = False
 
+        self.maze = None
         self.maze_grid = None
-        self.visual_grid = None
-        self.solution_grid = None
-        self.photo = None
+        self.visual_grids = {}
+        self.canvases = {}
+        self.photos = {}
+        self.photo1 = None
+        self.photo2 = None
 
         self.__initUI()
 
@@ -53,8 +56,8 @@ class MazeUI(Frame):
         self.create_maze = Button(self, text="Generate maze", command=self.__generate_maze)
         self.create_maze.grid(row=1, column=2)
 
-        self.canvas = Canvas(self, width=500, height=500)
-        self.canvas.grid(row=2, column=0, columnspan=3, padx=(4, 4), pady=(5, 5))
+        self.initial_canvas = Canvas(self, width=500, height=500)
+        self.initial_canvas.grid(row=2, column=0, columnspan=3, padx=(4, 4), pady=(5, 5))
 
         self.solver_list = Treeview(self, columns='algorithms')
         self.solver_list['show'] = 'headings'
@@ -77,6 +80,8 @@ class MazeUI(Frame):
     def __generate_maze(self):
         size_ok = False
         algos_ok = False
+        # Clear previous list
+        self.selected_solvers = []
 
         # Size input validation
         try:
@@ -99,12 +104,12 @@ class MazeUI(Frame):
 
         # Getting solver list selections
         solver_selection = self.solver_list.selection()
-        if len(solver_selection) > 0:
-            for solver in solver_selection:
-                self.selected_algorithms.append(self.solver_list.item(solver))
+        if 0 < len(solver_selection) <= 2:
+            for selection in solver_selection:
+                self.selected_solvers.append(self.solver_list.item(selection)['values'][0])
             algos_ok = True
         else:
-            messagebox.showwarning("Selection error", "Please select some solver algorithms.")
+            messagebox.showwarning("Selection error", "Please select 1-2 solver algorithms.")
             return
 
         # If inputs are okay, lose the listview and show the canvas
@@ -134,52 +139,66 @@ class MazeUI(Frame):
             self.next = True
 
     def initialize_maze(self, maze):
-        self.maze_grid = maze.grid
-        invert_bw_grid = 1 - maze.grid
-
-        # Scale the numbers to 255 and create RGB channels
-        self.visual_grid = np.stack((invert_bw_grid.astype('uint8')*255,
-                                     invert_bw_grid.astype('uint8')*255,
-                                     invert_bw_grid.astype('uint8')*255),
-                                    axis=2)
-
-        self.paint_entrances(maze.start, maze.end)
+        self.maze = np.copy(maze)
+        self.maze_grid = np.copy(maze.grid)
+        self.create_visual_grids(maze)
         self.update_maze()
 
-    def paint_entrances(self, start, end):
+    def create_visual_grids(self, maze):
+        for solver_name in self.selected_solvers:
+            invert_bw_grid = 1 - maze.grid
+
+            # Scale the numbers to 255 and create RGB channels
+            visual_grid = np.stack((invert_bw_grid.astype('uint8') * 255,
+                                    invert_bw_grid.astype('uint8') * 255,
+                                    invert_bw_grid.astype('uint8') * 255),
+                                   axis=2)
+
+            self.visual_grids[solver_name] = np.copy(visual_grid)
+            self.paint_entrances(solver_name, maze.start, maze.end)
+
+    def paint_entrances(self, solver_name, start, end):
         # Start to red
-        self.recolor_point(start[0], start[1], (255, 53, 22))
+        self.recolor_point(solver_name, start[0], start[1], (255, 53, 22))
 
         # End to green
-        self.recolor_point(end[0], end[1], (2, 255, 32))
+        self.recolor_point(solver_name, end[0], end[1], (2, 255, 32))
 
-    def recolor_point(self, r, c, rgb_values):
-        self.visual_grid[r][c][0] = rgb_values[0]
-        self.visual_grid[r][c][1] = rgb_values[1]
-        self.visual_grid[r][c][2] = rgb_values[2]
+    def recolor_point(self, solver_name, r, c, rgb_values):
+        self.visual_grids[solver_name][r][c][0] = rgb_values[0]
+        self.visual_grids[solver_name][r][c][1] = rgb_values[1]
+        self.visual_grids[solver_name][r][c][2] = rgb_values[2]
 
-    def draw_final_path(self, path, rgb_values):
+    def draw_final_path(self, solver_name, path, rgb_values):
         for point in path:
-            self.recolor_point(point[0], point[1], rgb_values)
+            self.recolor_point(solver_name, point[0], point[1], rgb_values)
 
     def update_maze(self):
-        # Create image from RGB array and scale it to size 480x480
-        # If image is not squared, it will be upscaled and aspect ratio is retained
-        pil_image = Image.fromarray(self.visual_grid)
-        #scaled_image = ImageOps.fit(pil_image, (480, 480))
+        self.initial_canvas.grid_forget()
 
-        old_size = pil_image.size
-        ratio = float(480) / max(old_size)
-        new_size = tuple([int(x * ratio) for x in old_size])
-        pil_image = pil_image.resize(new_size)
-        scaled_image = Image.new("RGB", (480, 480))
-        scaled_image.paste(pil_image,
-                           ((480 - new_size[0]) // 2, (480 - new_size[1]) // 2))
+        i = 0
+        for solver_name in self.selected_solvers:
+            canvas = Canvas(self, width=500, height=500)
+            canvas.grid(row=2, column=i * 4, columnspan=3, padx=(4, 4), pady=(5, 5))
+            self.canvases[solver_name] = canvas
+            i += 1
 
-        # Draw image onto the canvas
-        self.photo = ImageTk.PhotoImage(scaled_image)
-        self.canvas.create_image(500, 500, image=self.photo, anchor=SE)
+            # Create image from RGB array and scale it to size 480x480
+            # If image is not squared, it will be upscaled and aspect ratio is retained
+            pil_image = Image.fromarray(self.visual_grids[solver_name])
+            #scaled_image = ImageOps.fit(pil_image, (480, 480))
 
-    def provide_solvers(self, solver_list):
-        self.solvers = solver_list
+            old_size = pil_image.size
+            ratio = float(480) / max(old_size)
+            new_size = tuple([int(x * ratio) for x in old_size])
+            pil_image = pil_image.resize(new_size)
+            scaled_image = Image.new("RGB", (480, 480))
+            scaled_image.paste(pil_image,
+                               ((480 - new_size[0]) // 2, (480 - new_size[1]) // 2))
 
+            # Draw image onto the canvas
+            self.photos[solver_name] = ImageTk.PhotoImage(scaled_image)
+            canvas.create_image(500, 500, image=self.photos[solver_name], anchor=SE)
+
+    def clear_canvas_for_solver(self, solver_name):
+        self.canvases[solver_name].delete("all")
