@@ -139,7 +139,7 @@ class MazeUI(Frame):
             self.next = True
 
     def initialize_maze(self, maze):
-        self.maze = np.copy(maze)
+        self.maze = maze
         self.maze_grid = np.copy(maze.grid)
         self.create_visual_grids(maze)
         self.update_maze()

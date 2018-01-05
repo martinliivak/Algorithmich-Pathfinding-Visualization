@@ -88,7 +88,9 @@ def start_solver(root, solution_window, solver):
             path = solver.get_path()
 
             # Draw solution
-            solution_window.draw_final_path(path, (53, 165, 24))
+            solution_window.draw_final_path(solver.get_name(),
+                                            path,
+                                            (53, 165, 24))
             solution_window.update_maze()
 
 
