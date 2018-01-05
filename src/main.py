@@ -166,6 +166,12 @@ root.protocol("WM_DELETE_WINDOW", on_close)
 
 # List of solvers
 solvers = [AStar, BFS]
+
+# Might be avoided in the future, but atm needed for stupid reasons
+solver_name_dict = {}
+for solver in solvers:
+    solver_name_dict[solver.get_name()] = solver
+
 solution_window = MazeUI(root, solvers)
 
 # External loop
@@ -184,8 +190,10 @@ while True:
 
         # Generate and enable maze solution
         # generation_and_solution(root, solution_window)
-        resize_root_if_needed(root, len(solution_window.selected_solvers))
+        resize_root_if_needed(root, len(solution_window.selected_solver_names))
         maze = generate_maze(solution_window)
-        for solver in solvers:
-            init_solver = solver(solution_window.maze_grid, maze.start, maze.end)
-            start_solver(root, solution_window, init_solver)
+
+        for solver_name, solver in solver_name_dict.items():
+            if solver_name in solution_window.selected_solver_names:
+                init_solver = solver(solution_window.maze_grid, maze.start, maze.end)
+                start_solver(root, solution_window, init_solver)

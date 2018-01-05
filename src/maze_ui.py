@@ -14,7 +14,7 @@ class MazeUI(Frame):
         self.row, self.col = -1, -1
 
         self.solvers = solvers
-        self.selected_solvers = []
+        self.selected_solver_names = []
 
         self.maze_width = None
         self.maze_height = None
@@ -81,7 +81,7 @@ class MazeUI(Frame):
         size_ok = False
         algos_ok = False
         # Clear previous list
-        self.selected_solvers = []
+        self.selected_solver_names = []
 
         # Size input validation
         try:
@@ -106,7 +106,7 @@ class MazeUI(Frame):
         solver_selection = self.solver_list.selection()
         if 0 < len(solver_selection) <= 2:
             for selection in solver_selection:
-                self.selected_solvers.append(self.solver_list.item(selection)['values'][0])
+                self.selected_solver_names.append(self.solver_list.item(selection)['values'][0])
             algos_ok = True
         else:
             messagebox.showwarning("Selection error", "Please select 1-2 solver algorithms.")
@@ -145,7 +145,7 @@ class MazeUI(Frame):
         self.update_maze()
 
     def create_visual_grids(self, maze):
-        for solver_name in self.selected_solvers:
+        for solver_name in self.selected_solver_names:
             invert_bw_grid = 1 - maze.grid
 
             # Scale the numbers to 255 and create RGB channels
@@ -177,7 +177,7 @@ class MazeUI(Frame):
         self.initial_canvas.grid_forget()
 
         i = 0
-        for solver_name in self.selected_solvers:
+        for solver_name in self.selected_solver_names:
             canvas = Canvas(self, width=500, height=500)
             canvas.grid(row=2, column=i * 4, columnspan=3, padx=(4, 4), pady=(5, 5))
             self.canvases[solver_name] = canvas
