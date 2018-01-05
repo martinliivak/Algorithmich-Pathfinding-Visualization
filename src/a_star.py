@@ -42,9 +42,9 @@ class AStar:
         self.came_from = {}
 
         self.g_score = {}
-        for i in range(len(self.graph)):
-            for j in range(len(self.graph[i])):
-                self.g_score[(j, i)] = float("inf")
+        for i in range(self.h + 1):
+            for j in range(self.w + 1):
+                self.g_score[(i, j)] = float("inf")
 
         self.g_score[start] = 0
 
