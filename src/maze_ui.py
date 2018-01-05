@@ -28,10 +28,24 @@ class MazeUI(Frame):
         self.maze = None
         self.maze_grid = None
         self.visual_grids = {}
-        self.canvases = {}
         self.photos = {}
-        self.photo1 = None
-        self.photo2 = None
+
+        self.canvas_0 = Canvas(self, width=500, height=500)
+        self.canvas_0.grid(row=2, column=0, columnspan=3, padx=(4, 4), pady=(5, 5))
+
+        self.canvas_1 = Canvas(self, width=500, height=500)
+        self.canvas_1.grid(row=2, column=4, columnspan=3, padx=(4, 4), pady=(5, 5))
+
+        self.canvas_2 = Canvas(self, width=500, height=500)
+        self.canvas_2.grid(row=2, column=8, columnspan=3, padx=(4, 4), pady=(5, 5))
+
+        self.canvas_3 = Canvas(self, width=500, height=500)
+        self.canvas_3.grid(row=2, column=12, columnspan=3, padx=(4, 4), pady=(5, 5))
+
+        self.photo_0 = None
+        self.photo_1 = None
+        self.photo_2 = None
+        self.photo_3 = None
 
         self.__initUI()
 
@@ -105,7 +119,7 @@ class MazeUI(Frame):
 
         # Getting solver list selections
         solver_selection = self.solver_list.selection()
-        if 0 < len(solver_selection) <= 2:
+        if 0 < len(solver_selection) <= 3:
             for selection in solver_selection:
                 self.selected_solver_names.append(self.solver_list.item(selection)['values'][0])
             algos_ok = True
@@ -176,17 +190,26 @@ class MazeUI(Frame):
             self.recolor_point(solver_name, point[0], point[1], rgb_values)
 
     def update_maze(self):
-        i = 0
-        for solver_name in self.selected_solver_names:
-            canvas = Canvas(self, width=500, height=500)
-            canvas.grid(row=2, column=i * 4, columnspan=3, padx=(4, 4), pady=(5, 5))
-            self.canvases[solver_name] = canvas
-            i += 1
+        # print("Updating maze")
+        nr_solvers = len(self.selected_solver_names)
 
-            # Create image from RGB array and scale it to size 480x480
-            # If image is not squared, it will be upscaled and aspect ratio is retained
-            pil_image = Image.fromarray(self.visual_grids[solver_name])
-            # scaled_image = ImageOps.fit(pil_image, (480, 480))
+        solver_name_0 = self.selected_solver_names[0]
+        pil_image = Image.fromarray(self.visual_grids[solver_name_0])
+
+        old_size = pil_image.size
+        ratio = float(480) / max(old_size)
+        new_size = tuple([int(x * ratio) for x in old_size])
+        pil_image = pil_image.resize(new_size)
+        scaled_image = Image.new("RGB", (480, 480))
+        scaled_image.paste(pil_image,
+                           ((480 - new_size[0]) // 2, (480 - new_size[1]) // 2))
+
+        self.photo_0 = ImageTk.PhotoImage(scaled_image)
+        self.canvas_0.create_image(500, 500, image=self.photo_0, anchor=SE)
+
+        if nr_solvers > 1:
+            solver_name_1 = self.selected_solver_names[1]
+            pil_image = Image.fromarray(self.visual_grids[solver_name_1])
 
             old_size = pil_image.size
             ratio = float(480) / max(old_size)
@@ -196,9 +219,26 @@ class MazeUI(Frame):
             scaled_image.paste(pil_image,
                                ((480 - new_size[0]) // 2, (480 - new_size[1]) // 2))
 
-            # Draw image onto the canvas
-            self.photos[solver_name] = ImageTk.PhotoImage(scaled_image)
-            canvas.create_image(500, 500, image=self.photos[solver_name], anchor=SE)
+            self.photo_1 = ImageTk.PhotoImage(scaled_image)
+            self.canvas_1.create_image(500, 500, image=self.photo_1, anchor=SE)
 
+        if nr_solvers > 2:
+            solver_name_2 = self.selected_solver_names[2]
+            pil_image = Image.fromarray(self.visual_grids[solver_name_2])
+
+            old_size = pil_image.size
+            ratio = float(480) / max(old_size)
+            new_size = tuple([int(x * ratio) for x in old_size])
+            pil_image = pil_image.resize(new_size)
+            scaled_image = Image.new("RGB", (480, 480))
+            scaled_image.paste(pil_image,
+                               ((480 - new_size[0]) // 2, (480 - new_size[1]) // 2))
+
+            self.photo_2 = ImageTk.PhotoImage(scaled_image)
+            self.canvas_2.create_image(500, 500, image=self.photo_2, anchor=SE)
+
+        # TODO: Add fourth canvas parts
+
+    # TODO: Deprecated, I guess
     def clear_canvas_for_solver(self, solver_name):
         self.canvases[solver_name].delete("all")

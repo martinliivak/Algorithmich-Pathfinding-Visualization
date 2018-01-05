@@ -221,7 +221,7 @@ root.resizable(False, False)
 root.protocol("WM_DELETE_WINDOW", on_close)
 
 # List of solvers
-solvers = [AStar, BFS]
+solvers = [AStar, BFS, AStar2]
 
 # Might be avoided in the future, but atm needed for stupid reasons
 solver_name_dict = {}
