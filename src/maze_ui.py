@@ -66,7 +66,8 @@ class MazeUI(Frame):
         self.solver_list.grid(row=2, column=0, columnspan=3, padx=(4, 4), pady=(5, 5))
 
         for solver in self.solvers:
-            self.solver_list.insert('', 'end', values=solver.get_name())
+            name = '"' + solver.get_name() + '"'
+            self.solver_list.insert('', 'end', values=name)
 
         self.start_solution = Button(self, text="Start", command=self.__start_solution)
         self.start_solution.grid(row=3, column=0, pady=(0, 10))
@@ -186,7 +187,7 @@ class MazeUI(Frame):
             # Create image from RGB array and scale it to size 480x480
             # If image is not squared, it will be upscaled and aspect ratio is retained
             pil_image = Image.fromarray(self.visual_grids[solver_name])
-            #scaled_image = ImageOps.fit(pil_image, (480, 480))
+            # scaled_image = ImageOps.fit(pil_image, (480, 480))
 
             old_size = pil_image.size
             ratio = float(480) / max(old_size)
