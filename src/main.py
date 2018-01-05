@@ -65,7 +65,7 @@ def generation_and_solution(root, solution_window):
     new_elem = next(solver)
 
     while True:
-        if solution_window.start_solutions:
+        if solution_window.generate_new:
             # Clear canvas from old maze and stop new execution.
             solution_window.canvas.delete("all")
             solution_window.start = False
@@ -122,9 +122,12 @@ while True:
     if hard_exit:
         break
 
-    if solution_window.start_solutions:
+    if not solution_window.start_solutions:
+        continue
+
+    if solution_window.generate_new:
         # Reset maze generation flag
-        solution_window.start_solutions = False
+        solution_window.generate_new = False
 
         # Generate and enable maze solution
         generation_and_solution(root, solution_window)

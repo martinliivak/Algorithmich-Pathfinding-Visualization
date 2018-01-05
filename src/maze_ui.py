@@ -19,6 +19,7 @@ class MazeUI(Frame):
         self.maze_width = None
         self.maze_height = None
         self.start_solutions = False
+        self.generate_new = False
 
         self.start = False
         self.pause = False
@@ -110,23 +111,28 @@ class MazeUI(Frame):
         if size_ok and algos_ok:
             self.solver_list.grid_forget()
             self.start_solutions = True
+            self.generate_new = True
 
     def __start_solution(self):
         """
         Stop pausing and start solving."""
-        self.start = True
-        self.pause = False
+        print(self.start_solutions)
+        if self.start_solutions:
+            self.start = True
+            self.pause = False
 
     def __pause_solution(self):
         """
         Start pausing and stop solving."""
-        self.pause = True
-        self.start = True
+        if self.start_solutions:
+            self.pause = True
+            self.start = True
 
     def __next_step(self):
         """
         Pressing next has no meaning if solving isn't paused."""
-        self.next = True
+        if self.start_solutions:
+            self.next = True
 
     def initialize_maze(self, maze):
         self.maze_grid = maze.grid
