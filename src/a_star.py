@@ -4,8 +4,7 @@ import numpy as np
 
 def heuristic(a, b):
     """
-    Manhattan heuristic
-    """
+    Manhattan heuristic """
     r1, c1 = a
     r2, c2 = b
     return abs(r1 - r2) + abs(c1 - c2)
@@ -13,7 +12,7 @@ def heuristic(a, b):
 
 def heuristic_euc(a, b):
     """
-    Source: http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html"""
+    Source: http://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html """
     r1, c1 = a
     r2, c2 = b
     dr = abs(r1 - r2)
@@ -27,6 +26,8 @@ class AStar:
     """
 
     def __init__(self, graph, start, goal):
+        """
+        Initializing all of the parameters necessary to solve the maze using A star """
         self.graph = graph
         self.start = start
         self.goal = goal
@@ -54,6 +55,10 @@ class AStar:
         return self
 
     def __next__(self):
+        """
+        This makes the solver work in a Python generator style fashion, allowing the visualizer to call next until
+        None is returned, which signifies that the maze has been solved
+        """
         while len(self.open_set) != 0:
             current = min(self.open_set, key=self.f_score.get)
             if current == self.goal:
@@ -82,6 +87,8 @@ class AStar:
             return current
 
     def _get_neighbours(self, current):
+        """
+        A simple method to fetch the allowed neighbours of a given location in the maze """
         r, c = current
         neighbours = []
 
@@ -101,7 +108,9 @@ class AStar:
 
     def get_path(self):
         """
-        Source: Wikipedia (https://en.wikipedia.org/wiki/A*_search_algorithm)"""
+        Source: Wikipedia (https://en.wikipedia.org/wiki/A*_search_algorithm)
+        Returns the path from goal to start as a list
+        """
         current_node = self.goal
         total_path = [current_node]
         while current_node in self.came_from:
@@ -111,9 +120,13 @@ class AStar:
         return total_path
 
     def get_final_output(self):
+        """
+        Helper method for getting the path and scores """
         return self.get_path(), self.g_score, self.closed_set, self.g_score[self.goal]
 
     def dist(self, node_a, node_b):
+        """
+        Helper method for calculating distance between two points, not very useful if using Manhattan heuristic """
         return np.sqrt((node_a[0] - node_b[0]) ** 2 + (node_a[1] - node_b[1]) ** 2) * self.graph[node_b[1], node_b[0]]
 
     @staticmethod
@@ -127,6 +140,8 @@ class AStar2:
     """
 
     def __init__(self, graph, start, goal):
+        """
+        Initializing all of the parameters necessary to solve the maze using A star """
         self.graph = graph
         self.start = start
         self.goal = goal
@@ -143,6 +158,10 @@ class AStar2:
         self.cost_so_far[start] = 0
 
     def __next__(self):
+        """
+        This makes the solver work in a Python generator style fashion, allowing the visualizer to call next until
+        None is returned, which signifies that the maze has been solved
+        """
         while not self.frontier.empty():
             current = self.frontier.get()
 
@@ -163,6 +182,8 @@ class AStar2:
         return self
 
     def _get_neighbours(self, current):
+        """
+        A simple method to fetch the allowed neighbours of a given location in the maze """
         r, c = current
         neighbours = []
 
@@ -182,7 +203,9 @@ class AStar2:
 
     def get_path(self):
         """
-        Source: Wikipedia (https://en.wikipedia.org/wiki/A*_search_algorithm)"""
+        Source: Wikipedia (https://en.wikipedia.org/wiki/A*_search_algorithm)
+        Returns the path from goal to start as a list
+        """
         current_node = self.goal
         total_path = [current_node]
         while current_node in self.came_from:

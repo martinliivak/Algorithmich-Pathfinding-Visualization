@@ -2,7 +2,13 @@ from collections import deque
 
 
 class BFS:
+    """
+    Breadth-first search solver for maze graph
+    """
+
     def __init__(self, graph, start, goal):
+        """
+        Initializing all of the parameters necessary to solve the maze using BFS """
         self.graph = graph
         self.start = start
         self.goal = goal
@@ -18,6 +24,10 @@ class BFS:
         return self
 
     def __next__(self):
+        """
+        This makes the solver work in a Python generator style fashion, allowing the visualizer to call next until
+        None is returned, which signifies that the maze has been solved
+        """
         while self.queue:
             vertex, val = self.queue.popleft()
 
@@ -32,6 +42,8 @@ class BFS:
             return vertex
 
     def _get_neighbours(self, current):
+        """
+        A simple method to fetch the allowed neighbours of a given location in the maze """
         r, c = current
         neighbours = []
 
@@ -51,9 +63,10 @@ class BFS:
 
     def get_path(self):
         """
-        Source: Wikipedia (https://en.wikipedia.org/wiki/A*_search_algorithm)"""
+        Returns the path from goal to start as a list """
         current_node = self.goal
         total_path = [current_node]
+
         while current_node in self.came_from:
             current_node = self.came_from[current_node]
             if current_node is not None:
