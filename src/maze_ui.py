@@ -116,6 +116,7 @@ class MazeUI(Frame):
         # If inputs are okay, lose the listview and show the canvas
         if size_ok and algos_ok:
             self.solver_list.grid_forget()
+            self.initial_canvas.grid_forget()
             self.start_solutions = True
             self.generate_new = True
 
@@ -175,8 +176,6 @@ class MazeUI(Frame):
             self.recolor_point(solver_name, point[0], point[1], rgb_values)
 
     def update_maze(self):
-        self.initial_canvas.grid_forget()
-
         i = 0
         for solver_name in self.selected_solver_names:
             canvas = Canvas(self, width=500, height=500)
