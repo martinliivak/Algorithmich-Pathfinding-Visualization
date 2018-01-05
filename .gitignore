@@ -171,3 +171,7 @@ ENV/
 
 # mypy
 .mypy_cache/
+/.settings/
+/.project
+/.pydevproject
+/.gitignore
