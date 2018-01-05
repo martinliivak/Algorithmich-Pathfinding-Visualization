@@ -21,7 +21,7 @@ def heuristic_euc(a, b):
     return np.sqrt(dr * dr + dc * dc)
 
 
-class AStar():
+class AStar:
     """
     A-star algorithm solver for maze graph
     """
