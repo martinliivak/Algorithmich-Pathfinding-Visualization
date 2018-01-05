@@ -39,7 +39,47 @@ def generate_maze(solution_window):
 
 
 def start_solver(root, solution_window, solver):
-    pass
+    new_elem = next(solver)
+
+    while True:
+        if solution_window.generate_new:
+            # Clear canvas from old maze and stop new execution.
+            solution_window.canvas.delete("all")
+            solution_window.start = False
+            return
+
+        if hard_exit:
+            break
+
+        root.update()
+
+        # If start hasn't been pressed don't start solving
+        if not solution_window.start:
+            continue
+
+        # If pause is pressed, skip calculation. If next is pressed calculate until next iteration
+        if solution_window.pause:
+            if solution_window.next:
+                solution_window.next = False
+            else:
+                continue
+
+        if new_elem is not None:
+            # Recolor discovery path
+            solution_window.recolor_point(new_elem[0], new_elem[1], (51, 109, 204))
+            solution_window.update_maze()
+
+            new_elem = next(solver)
+        else:
+            # Recolor endpoint
+            solution_window.recolor_point(m.end[0], m.end[1], (51, 109, 204))
+            solution_window.update_maze()
+
+            path = solver.get_path()
+
+            # Draw solution
+            solution_window.draw_final_path(path, (53, 165, 24))
+            solution_window.update_maze()
 
 
 def generation_and_solution(root, solution_window):
@@ -130,4 +170,9 @@ while True:
         solution_window.generate_new = False
 
         # Generate and enable maze solution
-        generation_and_solution(root, solution_window)
+        # generation_and_solution(root, solution_window)
+        maze = generate_maze(solution_window)
+        for solver in solvers:
+            init_solver = solver(solution_window.maze_grid, maze.start, maze.end)
+            start_solver(root, solution_window, init_solver)
+

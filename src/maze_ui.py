@@ -116,7 +116,6 @@ class MazeUI(Frame):
     def __start_solution(self):
         """
         Stop pausing and start solving."""
-        print(self.start_solutions)
         if self.start_solutions:
             self.start = True
             self.pause = False
