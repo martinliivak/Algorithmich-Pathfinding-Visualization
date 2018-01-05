@@ -6,6 +6,7 @@ from prims import Prims
 from aldous_broder import AldousBroder
 from maze_ui import MazeUI
 from a_star import AStar, AStar2
+from bfs import BFS
 
 hard_exit = False
 
@@ -47,8 +48,8 @@ def start_solver(root, solution_window, solver):
 
     while True:
         if solution_window.generate_new:
-            # Clear canvas from old maze and stop new execution.
-            solution_window.clear_canvas_for_solver(solver.get_name())
+            # Clear canvas from old maze (?? is it even necessary??) and stop new execution.
+            # solution_window.clear_canvas_for_solver(solver.get_name())
             solution_window.start = False
             return
 
@@ -164,7 +165,7 @@ root.resizable(False, False)
 root.protocol("WM_DELETE_WINDOW", on_close)
 
 # List of solvers
-solvers = [AStar, AStar]
+solvers = [AStar, BFS]
 solution_window = MazeUI(root, solvers)
 
 # External loop
