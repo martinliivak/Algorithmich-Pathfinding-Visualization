@@ -1,4 +1,5 @@
-from tkinter import Frame, Label, Entry, Button, BOTH, Canvas, SE, messagebox
+from tkinter import Frame, Label, Entry, Button, BOTH, Canvas, SE, CENTER, messagebox
+from tkinter.ttk import Treeview
 from PIL import Image, ImageOps, ImageTk
 import numpy as np
 
@@ -12,9 +13,12 @@ class MazeUI(Frame):
         self.parent = parent
         self.row, self.col = -1, -1
 
+        self.solvers = []
+        self.selected_algorithms = []
+
         self.maze_width = None
         self.maze_height = None
-        self.maze_generated = False
+        self.start_solutions = False
 
         self.start = False
         self.pause = False
@@ -49,7 +53,17 @@ class MazeUI(Frame):
         self.create_maze.grid(row=1, column=2)
 
         self.canvas = Canvas(self, width=500, height=500)
-        self.canvas.grid(row=2, column=0, columnspan=3, pady=(5, 5), padx=(4, 4))
+        self.canvas.grid(row=2, column=0, columnspan=3, padx=(4, 4), pady=(5, 5))
+
+        self.solver_list = Treeview(self, columns='algorithms')
+        self.solver_list['show'] = 'headings'
+        self.solver_list.heading('algorithms', text='Algorithms')
+        self.solver_list.column('algorithms', width=250, anchor=CENTER)
+        self.solver_list.grid(row=2, column=0, columnspan=3, padx=(4, 4), pady=(5, 5))
+
+        for solver in self.solvers:
+            #self.solver_list.insert('', 'end', values=solver.get_name())
+            self.solver_list.insert('', 'end', values=str(solver))
 
         self.start_solution = Button(self, text="Start", command=self.__start_solution)
         self.start_solution.grid(row=3, column=0, pady=(0, 10))
@@ -61,6 +75,10 @@ class MazeUI(Frame):
         self.next_step.grid(row=3, column=2, pady=(0, 10))
 
     def __generate_maze(self):
+        size_ok = False
+        algos_ok = False
+
+        # Size input validation
         try:
             height = int(self.maze_height_entry.get())
             width = int(self.maze_width_entry.get())
@@ -71,12 +89,28 @@ class MazeUI(Frame):
             if 5 <= height <= 100 and 5 <= width <= 100:
                 self.maze_width = width
                 self.maze_height = height
-                self.maze_generated = True
+                size_ok = True
             else:
                 messagebox.showwarning("Size error", "Height and width need to be between 5 and 100.")
+                return
         else:
             messagebox.showwarning("Input error", "Height and width need to be integers.")
+            return
 
+        # Getting solver list selections
+        solver_selection = self.solver_list.selection()
+        if len(solver_selection) > 0:
+            for solver in solver_selection:
+                self.selected_algorithms.append(self.solver_list.item(solver))
+            algos_ok = True
+        else:
+            messagebox.showwarning("Selection error", "Please select some solver algorithms.")
+            return
+
+        # If inputs are okay, lose the listview and show the canvas
+        if size_ok and algos_ok:
+            self.solver_list.grid_forget()
+            self.start_solutions = True
 
     def __start_solution(self):
         """
@@ -141,3 +175,7 @@ class MazeUI(Frame):
         # Draw image onto the canvas
         self.photo = ImageTk.PhotoImage(scaled_image)
         self.canvas.create_image(500, 500, image=self.photo, anchor=SE)
+
+    def provide_solvers(self, solver_list):
+        self.solvers = solver_list
+

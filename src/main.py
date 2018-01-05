@@ -21,6 +21,27 @@ def on_close():
     hard_exit = True
 
 
+def generate_maze(solution_window):
+    # Generate maze and its entrances
+    m = Maze()
+    m.generator = AldousBroder(solution_window.maze_width, solution_window.maze_height)
+    m.generate()
+    m.generate_entrances()
+
+    # MazeUI initalization
+    solution_window.initialize_maze(m)
+
+    # Make entrance and exit into accessible areas
+    solution_window.maze_grid[m.start[0], m.start[1]] = 0
+    solution_window.maze_grid[m.end[0], m.end[1]] = 0
+
+    return m
+
+
+def start_solver(root, solution_window, solver):
+    pass
+
+
 def generation_and_solution(root, solution_window):
     """
     Maze's internal loop for solving and stepping."""
@@ -44,7 +65,7 @@ def generation_and_solution(root, solution_window):
     new_elem = next(solver)
 
     while True:
-        if solution_window.maze_generated:
+        if solution_window.start_solutions:
             # Clear canvas from old maze and stop new execution.
             solution_window.canvas.delete("all")
             solution_window.start = False
@@ -89,6 +110,8 @@ root = Tk()
 root.geometry("%dx%d" % (520, 600))
 root.resizable(False, False)
 root.protocol("WM_DELETE_WINDOW", on_close)
+
+solvers = []
 solution_window = MazeUI(root)
 
 # External loop
@@ -98,9 +121,9 @@ while True:
     if hard_exit:
         break
 
-    if solution_window.maze_generated:
+    if solution_window.start_solutions:
         # Reset maze generation flag
-        solution_window.maze_generated = False
+        solution_window.start_solutions = False
 
         # Generate and enable maze solution
         generation_and_solution(root, solution_window)
