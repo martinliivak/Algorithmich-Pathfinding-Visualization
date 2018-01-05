@@ -21,6 +21,10 @@ def on_close():
     hard_exit = True
 
 
+def resize_root_if_needed(root, number_of_solvers):
+    root.geometry("%dx%d" % (number_of_solvers*520, 600))
+
+
 def generate_maze(solution_window):
     # Generate maze and its entrances
     m = Maze()
@@ -44,7 +48,7 @@ def start_solver(root, solution_window, solver):
     while True:
         if solution_window.generate_new:
             # Clear canvas from old maze and stop new execution.
-            solution_window.canvas.delete("all")
+            solution_window.clear_canvas_for_solver(solver.get_name())
             solution_window.start = False
             return
 
@@ -66,13 +70,19 @@ def start_solver(root, solution_window, solver):
 
         if new_elem is not None:
             # Recolor discovery path
-            solution_window.recolor_point(new_elem[0], new_elem[1], (51, 109, 204))
+            solution_window.recolor_point(solver.get_name(),
+                                          new_elem[0],
+                                          new_elem[1],
+                                          (51, 109, 204))
             solution_window.update_maze()
 
             new_elem = next(solver)
         else:
             # Recolor endpoint
-            solution_window.recolor_point(m.end[0], m.end[1], (51, 109, 204))
+            solution_window.recolor_point(solver.get_name(),
+                                          solution_window.maze.end[0],
+                                          solution_window.maze.end[1],
+                                          (51, 109, 204))
             solution_window.update_maze()
 
             path = solver.get_path()
@@ -107,7 +117,7 @@ def generation_and_solution(root, solution_window):
     while True:
         if solution_window.generate_new:
             # Clear canvas from old maze and stop new execution.
-            solution_window.canvas.delete("all")
+            #solution_window.canvas.delete("all")
             solution_window.start = False
             return
 
@@ -152,7 +162,7 @@ root.resizable(False, False)
 root.protocol("WM_DELETE_WINDOW", on_close)
 
 # List of solvers
-solvers = [AStar]
+solvers = [AStar, AStar]
 solution_window = MazeUI(root, solvers)
 
 # External loop
@@ -171,8 +181,8 @@ while True:
 
         # Generate and enable maze solution
         # generation_and_solution(root, solution_window)
+        resize_root_if_needed(root, len(solution_window.selected_solvers))
         maze = generate_maze(solution_window)
         for solver in solvers:
             init_solver = solver(solution_window.maze_grid, maze.start, maze.end)
             start_solver(root, solution_window, init_solver)
-
