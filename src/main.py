@@ -111,8 +111,9 @@ root.geometry("%dx%d" % (520, 600))
 root.resizable(False, False)
 root.protocol("WM_DELETE_WINDOW", on_close)
 
-solvers = []
-solution_window = MazeUI(root)
+# List of solvers
+solvers = [AStar]
+solution_window = MazeUI(root, solvers)
 
 # External loop
 while True:

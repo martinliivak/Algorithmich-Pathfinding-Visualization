@@ -8,12 +8,12 @@ class MazeUI(Frame):
     """
     Maze UI"""
 
-    def __init__(self, parent):
+    def __init__(self, parent, solvers):
         Frame.__init__(self, parent)
         self.parent = parent
         self.row, self.col = -1, -1
 
-        self.solvers = []
+        self.solvers = solvers
         self.selected_algorithms = []
 
         self.maze_width = None
@@ -62,8 +62,7 @@ class MazeUI(Frame):
         self.solver_list.grid(row=2, column=0, columnspan=3, padx=(4, 4), pady=(5, 5))
 
         for solver in self.solvers:
-            #self.solver_list.insert('', 'end', values=solver.get_name())
-            self.solver_list.insert('', 'end', values=str(solver))
+            self.solver_list.insert('', 'end', values=solver.get_name())
 
         self.start_solution = Button(self, text="Start", command=self.__start_solution)
         self.start_solution.grid(row=3, column=0, pady=(0, 10))
