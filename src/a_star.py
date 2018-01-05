@@ -116,6 +116,10 @@ class AStar():
     def dist(self, node_a, node_b):
         return np.sqrt((node_a[0] - node_b[0]) ** 2 + (node_a[1] - node_b[1]) ** 2) * self.graph[node_b[1], node_b[0]]
 
+    @staticmethod
+    def get_name():
+        return "A*"
+
 
 class AStar2:
     """
@@ -186,3 +190,7 @@ class AStar2:
             total_path.append(current_node)
 
         return total_path
+
+    @staticmethod
+    def get_name():
+        return "A* (alternative)"
