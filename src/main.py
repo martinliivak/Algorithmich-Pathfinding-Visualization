@@ -7,6 +7,7 @@ from aldous_broder import AldousBroder
 from maze_ui import MazeUI
 from a_star import AStar, AStar2
 from bfs import BFS
+from dfs import DFS
 from dijkstra import Dijkstra
 
 hard_exit = False
@@ -222,7 +223,7 @@ root.resizable(False, False)
 root.protocol("WM_DELETE_WINDOW", on_close)
 
 # List of solvers
-solvers = [AStar, BFS, AStar2, Dijkstra]
+solvers = [AStar, BFS, AStar2, Dijkstra, DFS]
 
 # Might be avoided in the future, but atm needed for stupid reasons
 solver_name_dict = {}
