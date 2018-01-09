@@ -39,13 +39,13 @@ class MazeUI(Frame):
         self.canvas_2 = Canvas(self, width=500, height=500)
         self.canvas_2.grid(row=2, column=8, columnspan=3, padx=(4, 4), pady=(5, 5))
 
-        self.canvas_3 = Canvas(self, width=500, height=500)
-        self.canvas_3.grid(row=2, column=12, columnspan=3, padx=(4, 4), pady=(5, 5))
+        self.canvas_label_0 = None
+        self.canvas_label_1 = None
+        self.canvas_label_2 = None
 
         self.photo_0 = None
         self.photo_1 = None
         self.photo_2 = None
-        self.photo_3 = None
 
         self.__initUI()
 
@@ -84,13 +84,13 @@ class MazeUI(Frame):
             self.solver_list.insert('', 'end', values=name)
 
         self.start_solution = Button(self, text="Start", command=self.__start_solution)
-        self.start_solution.grid(row=3, column=0, pady=(0, 10))
+        self.start_solution.grid(row=4, column=0, pady=(0, 10))
 
         self.pause_solution = Button(self, text="Pause", command=self.__pause_solution)
-        self.pause_solution.grid(row=3, column=1, pady=(0, 10))
+        self.pause_solution.grid(row=4, column=1, pady=(0, 10))
 
         self.next_step = Button(self, text="Next", command=self.__next_step)
-        self.next_step.grid(row=3, column=2, pady=(0, 10))
+        self.next_step.grid(row=4, column=2, pady=(0, 10))
 
     def __generate_maze(self):
         size_ok = False
@@ -124,7 +124,7 @@ class MazeUI(Frame):
                 self.selected_solver_names.append(self.solver_list.item(selection)['values'][0])
             algos_ok = True
         else:
-            messagebox.showwarning("Selection error", "Please select 1-2 solver algorithms.")
+            messagebox.showwarning("Selection error", "Please select 1-3 solver algorithms.")
             return
 
         # If inputs are okay, lose the listview and show the canvas
@@ -190,7 +190,6 @@ class MazeUI(Frame):
             self.recolor_point(solver_name, point[0], point[1], rgb_values)
 
     def update_maze(self):
-        # print("Updating maze")
         nr_solvers = len(self.selected_solver_names)
 
         solver_name_0 = self.selected_solver_names[0]
@@ -207,6 +206,10 @@ class MazeUI(Frame):
         self.photo_0 = ImageTk.PhotoImage(scaled_image)
         self.canvas_0.create_image(500, 500, image=self.photo_0, anchor=SE)
 
+        if self.canvas_label_0 is None:
+            self.canvas_label_0 = Label(self, text=solver_name_0, font='Helvetica 9 bold')
+            self.canvas_label_0.grid(row=3, column=0, columnspan=3, padx=(4, 4), pady=(0, 5))
+
         if nr_solvers > 1:
             solver_name_1 = self.selected_solver_names[1]
             pil_image = Image.fromarray(self.visual_grids[solver_name_1])
@@ -221,6 +224,10 @@ class MazeUI(Frame):
 
             self.photo_1 = ImageTk.PhotoImage(scaled_image)
             self.canvas_1.create_image(500, 500, image=self.photo_1, anchor=SE)
+
+            if self.canvas_label_1 is None:
+                self.canvas_label_1 = Label(self, text=solver_name_1, font='Helvetica 9 bold')
+                self.canvas_label_1.grid(row=3, column=4, columnspan=3, padx=(4, 4), pady=(0, 5))
 
         if nr_solvers > 2:
             solver_name_2 = self.selected_solver_names[2]
@@ -237,8 +244,6 @@ class MazeUI(Frame):
             self.photo_2 = ImageTk.PhotoImage(scaled_image)
             self.canvas_2.create_image(500, 500, image=self.photo_2, anchor=SE)
 
-        # TODO: Add fourth canvas parts
-
-    # TODO: Deprecated, I guess
-    def clear_canvas_for_solver(self, solver_name):
-        self.canvases[solver_name].delete("all")
+            if self.canvas_label_2 is None:
+                self.canvas_label_2 = Label(self, text=solver_name_2, font='Helvetica 9 bold')
+                self.canvas_label_2.grid(row=3, column=8, columnspan=3, padx=(4, 4), pady=(0, 5))

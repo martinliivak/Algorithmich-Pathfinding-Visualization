@@ -26,7 +26,7 @@ def on_close():
 
 
 def resize_root_if_needed(root, number_of_solvers):
-    root.geometry("%dx%d" % (number_of_solvers * 520, 600))
+    root.geometry("%dx%d" % (number_of_solvers * 520, 620))
 
 
 def generate_maze(solution_window):

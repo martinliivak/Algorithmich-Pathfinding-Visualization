@@ -10,6 +10,7 @@ def heuristic(a, b):
     r2, c2 = b
     return abs(r1 - r2) + abs(c1 - c2)
 
+
 class JPS:
     """
     Implementation of Jump Point Search - an improvement of A*
@@ -59,25 +60,25 @@ class JPS:
 
     def usual_a_star(self, current):
         for next_item in self._get_neighbours(current):
-                new_cost = self.cost_so_far[current] + 1
-                if next_item not in self.cost_so_far or new_cost < self.cost_so_far[next_item]:
-                    self.cost_so_far[next_item] = new_cost
-                    priority = new_cost + heuristic(self.goal, next_item)
-                    self.frontier.put(next_item, priority)
-                    self.came_from[next_item] = current
+            new_cost = self.cost_so_far[current] + 1
+            if next_item not in self.cost_so_far or new_cost < self.cost_so_far[next_item]:
+                self.cost_so_far[next_item] = new_cost
+                priority = new_cost + heuristic(self.goal, next_item)
+                self.frontier.put(next_item, priority)
+                self.came_from[next_item] = current
 
-    #Performs a check to see, if the neighbors and the point form a line
+    # Performs a check to see, if the neighbors and the point form a line
     def is_straight(self, current):
         current_neighbours = self._get_neighbours(current)
         if (len(current_neighbours) == 2):
             nei_a = current_neighbours[0]
-            a_x, a_y = nei_a 
+            a_x, a_y = nei_a
             nei_b = current_neighbours[1]
             b_x, b_y = nei_b
             if (a_x == b_x or a_y == b_y):
                 return True
         return False
-    
+
     def preform_straight_jump(self, current):
         summer = 1
         current_p = current
@@ -90,12 +91,12 @@ class JPS:
             current_p = next_point
             summer += 1
         if (current_p != self.goal):
-            #priority = self.cost_so_far[current_p] + heuristic(self.goal, current_p)
+            # priority = self.cost_so_far[current_p] + heuristic(self.goal, current_p)
             self.usual_a_star(current_p)
-            #self.frontier.put(current_p, priority)
-        #print("Made a jump of length", summer)
+            # self.frontier.put(current_p, priority)
+        # print("Made a jump of length", summer)
         return current_p
-            
+
     # Assumes, that this is already a line
     def get_next_in_line(self, current):
         current_neighbours = self._get_neighbours(current)
@@ -103,7 +104,7 @@ class JPS:
         if current_neighbours[0] == prev_node:
             return current_neighbours[1]
         else:
-            return current_neighbours[0] 
+            return current_neighbours[0]
 
     def _get_neighbours(self, current):
         """
@@ -140,4 +141,4 @@ class JPS:
 
     @staticmethod
     def get_name():
-        return "JPS"
+        return "Jump Point Search"
