@@ -230,7 +230,7 @@ root.resizable(False, False)
 root.protocol("WM_DELETE_WINDOW", on_close)
 
 # List of maze generators
-maze_generators = [Prims, Kruskal, AldousBroder]
+maze_generators = [AldousBroder, Prims, Kruskal]
 
 # List of solvers
 solvers = [AStar, BFS, AStar2, Dijkstra, DFS, JPS]
