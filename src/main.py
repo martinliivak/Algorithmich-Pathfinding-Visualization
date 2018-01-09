@@ -233,7 +233,7 @@ root.protocol("WM_DELETE_WINDOW", on_close)
 maze_generators = [AldousBroder, Prims, Kruskal]
 
 # List of solvers
-solvers = [AStar, BFS, AStar2, Dijkstra, DFS, JPS]
+solvers = [BFS, DFS, Dijkstra, AStar, AStar2, JPS]
 
 # Might be avoided in the future, but atm needed for stupid reasons
 solver_name_dict = {}
