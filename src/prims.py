@@ -52,3 +52,7 @@ class Prims(MazeGenAlgo):
             neighbors = list(set(neighbors + unvisited))
 
         return grid
+
+    @staticmethod
+    def get_name():
+        return "Prim"

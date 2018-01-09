@@ -26,13 +26,19 @@ def on_close():
 
 
 def resize_root_if_needed(root, number_of_solvers):
-    root.geometry("%dx%d" % (number_of_solvers * 520, 620))
+    root.geometry("%dx%d" % (number_of_solvers * 520, 650))
 
 
-def generate_maze(solution_window):
+def generate_maze(solution_window, maze_generator_name, maze_generator_list):
+    # Find the generator that was selected
+    generator = None
+    for maze_generator in maze_generator_list:
+        if maze_generator.get_name() == maze_generator_name:
+            generator = maze_generator
+
     # Generate maze and its entrances
     m = Maze()
-    m.generator = AldousBroder(solution_window.maze_width, solution_window.maze_height)
+    m.generator = generator(solution_window.maze_width, solution_window.maze_height)
     m.generate()
     m.generate_entrances()
 
@@ -219,9 +225,12 @@ def generation_and_solution(root, solution_window):
 
 # Tkinter initalization
 root = Tk()
-root.geometry("%dx%d" % (520, 600))
+root.geometry("%dx%d" % (520, 625))
 root.resizable(False, False)
 root.protocol("WM_DELETE_WINDOW", on_close)
+
+# List of maze generators
+maze_generators = [Prims, Kruskal, AldousBroder]
 
 # List of solvers
 solvers = [AStar, BFS, AStar2, Dijkstra, DFS, JPS]
@@ -231,7 +240,7 @@ solver_name_dict = {}
 for solver in solvers:
     solver_name_dict[solver.get_name()] = solver
 
-solution_window = MazeUI(root, solvers)
+solution_window = MazeUI(root, maze_generators, solvers)
 
 # External loop
 while True:
@@ -250,7 +259,7 @@ while True:
         # Generate and enable maze solution
         # generation_and_solution(root, solution_window)
         resize_root_if_needed(root, len(solution_window.selected_solver_names))
-        maze = generate_maze(solution_window)
+        maze = generate_maze(solution_window, solution_window.selected_maze_generator, maze_generators)
 
         active_solvers = []
 

@@ -1,4 +1,4 @@
-from tkinter import Frame, Label, Entry, Button, BOTH, Canvas, SE, CENTER, messagebox
+from tkinter import Frame, Label, Entry, Button, BOTH, Canvas, SE, CENTER, messagebox, StringVar, OptionMenu
 from tkinter.ttk import Treeview
 from PIL import Image, ImageOps, ImageTk
 import numpy as np
@@ -8,13 +8,15 @@ class MazeUI(Frame):
     """
     Maze UI"""
 
-    def __init__(self, parent, solvers):
+    def __init__(self, parent, maze_generators, solvers):
         Frame.__init__(self, parent)
         self.parent = parent
         self.row, self.col = -1, -1
 
         self.solvers = solvers
         self.selected_solver_names = []
+
+        self.maze_generators = maze_generators
 
         self.maze_width = None
         self.maze_height = None
@@ -31,13 +33,13 @@ class MazeUI(Frame):
         self.photos = {}
 
         self.canvas_0 = Canvas(self, width=500, height=500)
-        self.canvas_0.grid(row=2, column=0, columnspan=3, padx=(4, 4), pady=(5, 5))
+        self.canvas_0.grid(row=3, column=0, columnspan=3, padx=(4, 4), pady=(5, 5))
 
         self.canvas_1 = Canvas(self, width=500, height=500)
-        self.canvas_1.grid(row=2, column=4, columnspan=3, padx=(4, 4), pady=(5, 5))
+        self.canvas_1.grid(row=3, column=4, columnspan=3, padx=(4, 4), pady=(5, 5))
 
         self.canvas_2 = Canvas(self, width=500, height=500)
-        self.canvas_2.grid(row=2, column=8, columnspan=3, padx=(4, 4), pady=(5, 5))
+        self.canvas_2.grid(row=3, column=8, columnspan=3, padx=(4, 4), pady=(5, 5))
 
         self.canvas_label_0 = None
         self.canvas_label_1 = None
@@ -58,6 +60,7 @@ class MazeUI(Frame):
 
         Label(self, text='Height').grid(row=0, column=0)
         Label(self, text='Width').grid(row=0, column=1)
+        Label(self, text='Maze algorithm').grid(row=0, column=2)
 
         self.maze_width_entry = Entry(self)
         self.maze_width_entry.grid(row=1, column=0)
@@ -67,30 +70,46 @@ class MazeUI(Frame):
         self.maze_height_entry.grid(row=1, column=1)
         self.maze_height_entry.insert('end', '50')
 
+        maze_generator_names = []
+        for generator in self.maze_generators:
+            maze_generator_names.append(generator.get_name())
+
+        var = StringVar(self)
+        var.set(maze_generator_names[0])
+        self.selected_maze_generator = maze_generator_names[0]
+
+        self.maze_generation_options = OptionMenu(self, var, *maze_generator_names,
+                                                  command=self.__select_maze_generator)
+        self.maze_generation_options.grid(row=1, column=2)
+        self.maze_generation_options.config(width=14)
+
         self.create_maze = Button(self, text="Generate maze", command=self.__generate_maze)
-        self.create_maze.grid(row=1, column=2)
+        self.create_maze.grid(row=2, column=1)
 
         self.initial_canvas = Canvas(self, width=500, height=500)
-        self.initial_canvas.grid(row=2, column=0, columnspan=3, padx=(4, 4), pady=(5, 5))
+        self.initial_canvas.grid(row=3, column=0, columnspan=3, padx=(4, 4), pady=(5, 5))
 
         self.solver_list = Treeview(self, columns='algorithms')
         self.solver_list['show'] = 'headings'
         self.solver_list.heading('algorithms', text='Algorithms')
         self.solver_list.column('algorithms', width=250, anchor=CENTER)
-        self.solver_list.grid(row=2, column=0, columnspan=3, padx=(4, 4), pady=(5, 5))
+        self.solver_list.grid(row=3, column=0, columnspan=4, padx=(4, 4), pady=(5, 5))
 
         for solver in self.solvers:
             name = '"' + solver.get_name() + '"'
             self.solver_list.insert('', 'end', values=name)
 
         self.start_solution = Button(self, text="Start", command=self.__start_solution)
-        self.start_solution.grid(row=4, column=0, pady=(0, 10))
+        self.start_solution.grid(row=5, column=0, pady=(0, 10))
 
         self.pause_solution = Button(self, text="Pause", command=self.__pause_solution)
-        self.pause_solution.grid(row=4, column=1, pady=(0, 10))
+        self.pause_solution.grid(row=5, column=1, pady=(0, 10))
 
         self.next_step = Button(self, text="Next", command=self.__next_step)
-        self.next_step.grid(row=4, column=2, pady=(0, 10))
+        self.next_step.grid(row=5, column=2, pady=(0, 10))
+
+    def __select_maze_generator(self, value):
+        self.selected_maze_generator = value
 
     def __generate_maze(self):
         size_ok = False
@@ -208,7 +227,7 @@ class MazeUI(Frame):
 
         if self.canvas_label_0 is None:
             self.canvas_label_0 = Label(self, text=solver_name_0, font='Helvetica 9 bold')
-            self.canvas_label_0.grid(row=3, column=0, columnspan=3, padx=(4, 4), pady=(0, 5))
+            self.canvas_label_0.grid(row=4, column=0, columnspan=3, padx=(4, 4), pady=(0, 5))
 
         if nr_solvers > 1:
             solver_name_1 = self.selected_solver_names[1]
@@ -227,7 +246,7 @@ class MazeUI(Frame):
 
             if self.canvas_label_1 is None:
                 self.canvas_label_1 = Label(self, text=solver_name_1, font='Helvetica 9 bold')
-                self.canvas_label_1.grid(row=3, column=4, columnspan=3, padx=(4, 4), pady=(0, 5))
+                self.canvas_label_1.grid(row=4, column=4, columnspan=3, padx=(4, 4), pady=(0, 5))
 
         if nr_solvers > 2:
             solver_name_2 = self.selected_solver_names[2]
@@ -246,4 +265,4 @@ class MazeUI(Frame):
 
             if self.canvas_label_2 is None:
                 self.canvas_label_2 = Label(self, text=solver_name_2, font='Helvetica 9 bold')
-                self.canvas_label_2.grid(row=3, column=8, columnspan=3, padx=(4, 4), pady=(0, 5))
+                self.canvas_label_2.grid(row=4, column=8, columnspan=3, padx=(4, 4), pady=(0, 5))
