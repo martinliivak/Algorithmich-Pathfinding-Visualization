@@ -1,6 +1,6 @@
 from queue import PriorityQueue
 import numpy as np
-from scipy.constants.constants import N_A
+from math import floor
 
 
 def heuristic(a, b):
@@ -58,12 +58,12 @@ class JPS:
     def __iter__(self):
         return self
 
-    def usual_a_star(self, current):
+    def usual_a_star(self, current, plen=1):
         for next_item in self._get_neighbours(current):
             new_cost = self.cost_so_far[current] + 1
             if next_item not in self.cost_so_far or new_cost < self.cost_so_far[next_item]:
                 self.cost_so_far[next_item] = new_cost
-                priority = new_cost + heuristic(self.goal, next_item)
+                priority = new_cost - floor(plen/2) + heuristic(self.goal, next_item)
                 self.frontier.put(next_item, priority)
                 self.came_from[next_item] = current
 
@@ -95,7 +95,7 @@ class JPS:
             summer += 1
         if (current_p != self.goal):
             # priority = self.cost_so_far[current_p] + heuristic(self.goal, current_p)
-            self.usual_a_star(current_p)
+            self.usual_a_star(current_p, summer)
             # self.frontier.put(current_p, priority)
         # print("Made a jump of length", summer)
         return jump_path
