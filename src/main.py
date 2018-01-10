@@ -80,7 +80,14 @@ def start_solver(root, solution_window, solver):
 
         if new_elem is not None:
             # Recolor discovery path
-            solution_window.recolor_point(solver.get_name(),
+            if type(new_elem) is list:
+                for el in new_elem:
+                    solution_window.recolor_point(solver.get_name(),
+                                          el[0],
+                                          el[1],
+                                          (51, 109, 204))
+            else:
+                    solution_window.recolor_point(solver.get_name(),
                                           new_elem[0],
                                           new_elem[1],
                                           (51, 109, 204))
@@ -137,7 +144,14 @@ def start_solving(root, solution_window, active_solvers):
         for i, new_elem in enumerate(new_elems):
             solver = active_solvers[i]
             if new_elem is not None:
-                solution_window.recolor_point(solver.get_name(),
+                if type(new_elem) is list:
+                    for el in new_elem:
+                        solution_window.recolor_point(solver.get_name(),
+                                              el[0],
+                                              el[1],
+                                              (51, 109, 204))
+                else:
+                    solution_window.recolor_point(solver.get_name(),
                                               new_elem[0],
                                               new_elem[1],
                                               (51, 109, 204))

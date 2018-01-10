@@ -80,6 +80,8 @@ class JPS:
         return False
 
     def preform_straight_jump(self, current):
+        jump_path = []
+        jump_path.append(current)
         summer = 1
         current_p = current
         while (self.is_straight(current_p) or current_p == self.goal):
@@ -89,13 +91,14 @@ class JPS:
                 self.cost_so_far[next_point] = new_cost
                 self.came_from[next_point] = current_p
             current_p = next_point
+            jump_path.append(current_p)
             summer += 1
         if (current_p != self.goal):
             # priority = self.cost_so_far[current_p] + heuristic(self.goal, current_p)
             self.usual_a_star(current_p)
             # self.frontier.put(current_p, priority)
         # print("Made a jump of length", summer)
-        return current_p
+        return jump_path
 
     # Assumes, that this is already a line
     def get_next_in_line(self, current):
